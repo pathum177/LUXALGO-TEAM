@@ -111,27 +111,27 @@ async function connectToWA() {;
         msgRetryCounterCache
     })
 
-   conn.ev.on('connection.update', async (update) => {
-    const { connection, lastDisconnect } = update
-
-    if (connection === 'close') {
-        if (lastDisconnect?.error?.output?.statusCode !== DisconnectReason.loggedOut) {
-            console.log("🔄 Reconnecting...")
-            connectToWA()
-        } else {
-            console.log("❌ Logged out. Delete session and re-pair.")
-        }
-    } 
-    
-    if (connection === 'open' || connection === 'connected') {
-        console.log('Installing plugins 🧬... ')
-        fs.readdirSync("./plugins/").forEach((plugin) => {
-            if (path.extname(plugin).toLowerCase() == ".js") {
-                require("./plugins/" + plugin)
+conn.ev.on('connection.update', async (update) => {
+        const {
+            connection,
+            lastDisconnect
+        } = update
+        if (connection === 'close') {
+            if (lastDisconnect.error.output.statusCode !== DisconnectReason.loggedOut) {
+                connectToWA()
             }
-        })
-        console.log('LUXALGO-XD Plugins installed 📂')
-        console.log('✅ Bot connected successfully!')
+        } else if (connection === 'open') {
+
+            console.log('Installing plugins 🧬... ')
+            const path = require('path');
+            fs.readdirSync("./plugins/").forEach((plugin) => {
+                if (path.extname(plugin).toLowerCase() == ".js") {
+                    require("./plugins/" + plugin);
+                }
+            });
+            console.log('LUXALGO-XD Plugins installed 📂')
+            console.log(' Bot connected ✅')
+	 
 	 
 
 //================== CONNECT MG ==================
